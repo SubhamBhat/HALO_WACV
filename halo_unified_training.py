@@ -55,7 +55,8 @@ class Config:
     #   stanford_cars   → Search & add "stanford-cars-dataset" from Kaggle Datasets
     #   ham10000        → Search & add "skin-cancer-mnist-ham10000" from Kaggle Datasets
     # -------------------------------------------------------------------------
-    DATASET = "stanford_cars"
+    DATASETS = ["cifar10_lt", "cifar100_lt", "oxford_pet", "cub200", "stanford_cars"]
+    DATASET = "cifar10_lt"  # Default
     
     # -------------------------------------------------------------------------
     # BACKBONE & HARDWARE CONFIGURATION
@@ -78,7 +79,7 @@ class Config:
     SAVE_DIR = "/kaggle/working/results"
     
     # Run these backbones sequentially (Top 3 diverse architectures)
-    BACKBONES = ["resnet18", "densenet121", "efficientnet_b0", "squeezenet"]
+    BACKBONES = ["resnet18", "densenet121", "mobilenet_v2", "efficientnet_b0", "squeezenet"]
     DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     EPOCHS = 100
     LEARNING_RATE = 1e-4
@@ -1774,6 +1775,9 @@ def run_pipeline():
     print(f"\nDone with {cfg.BACKBONE}! Check {cfg.SAVE_DIR}")
 
 if __name__ == "__main__":
-    for b_name in cfg.BACKBONES:
-        cfg.set_backbone(b_name)
-        run_pipeline()
+    for d_name in cfg.DATASETS:
+        cfg.DATASET = d_name
+        for b_name in cfg.BACKBONES:
+            cfg.set_backbone(b_name)
+            run_pipeline()
+
